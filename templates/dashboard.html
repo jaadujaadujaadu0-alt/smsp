@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Allocated Numbers Real-time Index</h2>
+<div class="card shadow-sm p-4">
+    <div class="table-responsive">
+        <table class="table table-striped" id="numbersTable">
+            <thead>
+                <tr>
+                    <th>Line Index ID</th>
+                    <th>Assigned Object Line Number</th>
+                    <th>Current System Destination Route Context</th>
+                    <th>State/Status Flag</th>
+                </tr>
+            </thead>
+            <tbody id="numbersBody">
+                <tr><td colspan="4" class="text-center text-muted">Polling current target allocation stream array...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetch('/api/numbers')
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById("numbersBody");
+                tbody.innerHTML = "";
+                if(!data.aaData || data.aaData.length === 0) {
+                    tbody.innerHTML = "<tr><td colspan='4' class='text-center'>No active inventory lines mapped.</td></tr>";
+                    return;
+                }
+                data.aaData.forEach((row, idx) => {
+                    let tr = document.createElement("tr");
+                    tr.innerHTML = `<td>${idx + 1}</td>
+                                    <td><strong>${row[0] || 'N/A'}</strong></td>
+                                    <td>${row[1] || 'N/A'}</td>
+                                    <td><span class="badge bg-success">${row[2] || 'Active'}</span></td>`;
+                    tbody.appendChild(tr);
+                });
+            });
+    });
+</script>
+{% endblock %}

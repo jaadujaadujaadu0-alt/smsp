@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">Unlimited Data Stream CDR Reporting Summary</h2>
+<div class="card shadow-sm p-4 mb-4">
+    <form method="POST" class="row g-3 align-items-end">
+        <div class="col-auto">
+            <label class="form-label">Query Window Date Target</label>
+            <input type="date" name="date" class="form-control" value="{{ target_date }}">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-dark">Pull Complete Stream Dataset</button>
+        </div>
+    </form>
+</div>
+
+<div class="card shadow-sm p-4">
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Timestamp Data Line</th>
+                    <th>Origin Context</th>
+                    <th>Target Context</th>
+                    <th>Message Parameters</th>
+                    <th>Status System Flag</th>
+                    <th>Cost Vector Allocation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if records %}
+                    {% for row in records %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        {% for cell in row[:6] %}
+                            <td>{{ cell }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="7" class="text-center text-muted">No records retrieved for the configured parameters target query.</td></tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">System Routing Allocation Engine</h2>
+<div class="row">
+    <div class="col-md-7">
+        <div class="card shadow-sm p-4">
+            <h5 class="mb-3">Request Target Routing Allocation</h5>
+            <div class="mb-3">
+                <label class="form-label">Target System Range Channel</label>
+                <select id="rangeSelect" class="form-select">
+                    {% for rng in ranges %}
+                        <option value="{{ rng.db_id }}">ID: {{ rng.db_id }} | {{ rng.label }} (Stock: {{ rng.stock }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Allocation Limit Quantity</label>
+                <input type="number" id="qtyInput" class="form-control" value="10" min="1">
+            </div>
+            <button onclick="triggerAllocation()" class="btn btn-warning w-100">Process Twin-Pass Matrix Push</button>
+            <div id="statusMessage" class="mt-3"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function triggerAllocation() {
+        const rid = document.getElementById("rangeSelect").value;
+        const qty = document.getElementById("qtyInput").value;
+        const statusDiv = document.getElementById("statusMessage");
+        
+        statusDiv.innerHTML = `<div class="alert alert-info">Executing script allocation channels... Please hold.</div>`;
+        
+        fetch('/api/allocate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ rid: rid, qty: qty })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                statusDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+            } else {
+                statusDiv.innerHTML = `<div class="alert alert-danger">${data.message}</div>`;
+            }
+        });
+    }
+</script>
+{% endblock %}

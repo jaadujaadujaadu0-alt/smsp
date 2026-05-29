@@ -527,41 +527,38 @@ report_html = """{% extends "base.html" %}
 {% endblock %}
 """
 
-requirements_txt = """
-Flask==3.0.2
+requirements_txt = """Flask==3.0.2
 requests==2.31.0
 beautifulsoup4==4.12.3
 gunicorn==21.2.0
 """
 
-procfile_content = """
-web: gunicorn app:app
+procfile_content = """web: gunicorn app:app
 """
 
-# Map paths to content
+# Map paths directly to current directory for flat architecture compatibility
 files_to_create = {
-    "telecom_portal/app.py": app_code,
-    "telecom_portal/requirements.txt": requirements_txt,
-    "telecom_portal/Procfile": procfile_content,
-    "telecom_portal/templates/base.html": base_html,
-    "telecom_portal/templates/login.html": login_html,
-    "telecom_portal/templates/dashboard_home.html": dashboard_home_html,
-    "telecom_portal/templates/dashboard.html": dashboard_html,
-    "telecom_portal/templates/allocate.html": allocate_html,
-    "telecom_portal/templates/report.html": report_html
+    "app.py": app_code,
+    "requirements.txt": requirements_txt,
+    "Procfile": procfile_content,
+    "templates/base.html": base_html,
+    "templates/login.html": login_html,
+    "templates/dashboard_home.html": dashboard_home_html,
+    "templates/dashboard.html": dashboard_html,
+    "templates/allocate.html": allocate_html,
+    "templates/report.html": report_html
 }
 
-# Execution flow
 if __name__ == "__main__":
-    print("[*] Starting structure creation engine...")
+    print("[*] Starting structure creation engine directly at root folder level...")
     
-    # Generate directories
-    os.makedirs("telecom_portal/templates", exist_ok=True)
+    # Create templates directory in current working folder
+    os.makedirs("templates", exist_ok=True)
     
-    # Write components
+    # Generate all deployment configurations and scripts
     for path, content in files_to_create.items():
         with open(path, "w", encoding="utf-8") as f:
             f.write(content.strip() + "\n")
-        print(f"[+] Created file: {path}")
+        print(f"[+] Created file layout item: {path}")
         
-    print("\\n[SUCCESS] Project structure complete! Ready for local use or direct Railway deployment.")
+    print("\n[SUCCESS] Root environment layout completed successfully. Ready for instant Railway synchronization.")
